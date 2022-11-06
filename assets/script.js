@@ -73,12 +73,10 @@ function displayWeather(location) {
             locationError.textContent = `${location} not found.`
             document.body.appendChild(locationError)
         } else {
-
             // var lat = data[0].lat
             // var lon = data[0].lon
             // var {lat, lon} = data[0]
             // console.log({lat, lon})
-            
             getWeather({lat: data[0].lat, lon: data[0].lon})
             .then(weatherResponse => weatherResponse.json())
             
@@ -87,16 +85,11 @@ function displayWeather(location) {
                 weatherStatement.textContent = `${weatherData.weather[0].main}: It is currently ${weatherData.weather[0].description}`
                 document.body.appendChild(weatherStatement)
                 addHistory(location)
-                document.body.textContent = JSON.stringify(weatherData, null, 2)
             })
             .catch(error => {
                 document.body.textContent = error.message
             })
-
-
         }
-
-
     })
     .catch(error => {
         document.body.textContent = error.message
