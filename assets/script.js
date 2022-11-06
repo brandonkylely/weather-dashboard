@@ -1,6 +1,6 @@
 var apiKey = "afc667415d83ab768de2ebb2e45133e9";
 
-var input = document.querySelector('#cityInput')
+var cityInput = document.querySelector('#cityInput')
 cityInput.addEventListener("keyup", function(event) {
     if (event.key === "Enter") {
         displayWeather(event.target.value)
@@ -27,11 +27,11 @@ function displayWeather(location) {
     .then(data => {
 
 
-        // if (data.length === 0) {
-        //     var locationError = document.createElement('div')
-        //     locationError.textContent = `${location} not found.`
-        //     document.body.appendChild(locationError)
-        // } else {
+        if (data.length === 0) {
+            var locationError = document.createElement('div')
+            locationError.textContent = `${location} not found.`
+            document.body.appendChild(locationError)
+        } else {
 
             // var lat = data[0].lat
             // var lon = data[0].lon
@@ -52,7 +52,7 @@ function displayWeather(location) {
             })
 
 
-        // }
+        }
 
 
     })
