@@ -1,4 +1,4 @@
-var apiKey = "afc667415d83ab768de2ebb2e45133e9";
+var apiKey = "revoke";
 var weatherSelection = document.querySelector("#selector")
 
 var pastSearchHistory = localStorage.getItem("history")
