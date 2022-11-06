@@ -1,4 +1,5 @@
 var apiKey = "afc667415d83ab768de2ebb2e45133e9";
+var weatherSelection = document.querySelector("#selector")
 
 var pastSearchHistory = localStorage.getItem("history")
 
@@ -27,10 +28,10 @@ cityInput.addEventListener("keyup", function(event) {
 
 function getWeather({lat, lon}) {
     // var { lat, lon } = coordinates
-    return fetch(`api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`)
+    return fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`)
 }
 function getCoordinates(cityName) {
-    return fetch (`http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=5&appid=${apiKey}`)
+    return fetch (`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}&units=imperial`)
 }
 
 // .then(response => response.json())
@@ -66,7 +67,7 @@ function displayWeather(location) {
     getCoordinates(location)
     .then(response => response.json())
     .then(data => {
-
+        console.log(data)
 
         if (data.length === 0) {
             var locationError = document.createElement('div')
@@ -77,13 +78,23 @@ function displayWeather(location) {
             // var lon = data[0].lon
             // var {lat, lon} = data[0]
             // console.log({lat, lon})
-            getWeather({lat: data[0].lat, lon: data[0].lon})
+            // var currentWeather = document.createElement("div")
+            // currentWeather.textContent = `${data.main.temp}`
+            weatherSelection.innerHTML = `
+            <h3>${data.name} ${moment(data.dt, "X").format("MM/DD/YYYY")} <img src="http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png"></h3>
+                <p>Temp:${data.main.temp} degrees F</p>
+                `
+
+            getWeather({lat: data.coord.lat, lon: data.coord.lon})
             .then(weatherResponse => weatherResponse.json())
             
             .then(weatherData => {  
-                var weatherStatement = document.createElement('div')
-                weatherStatement.textContent = `${weatherData.weather[0].main}: It is currently ${weatherData.weather[0].description}`
-                document.body.appendChild(weatherStatement)
+                console.log(weatherData)
+                for (let i = 2; i < weatherData.list.length;  i=i+8) {
+                    var weatherStatement = document.createElement('div')
+                    weatherStatement.textContent = `${weatherData.list[i].main.temp}: It is currently `
+                    document.body.appendChild(weatherStatement)
+                }
                 addHistory(location)
             })
             .catch(error => {
