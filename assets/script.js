@@ -1,5 +1,23 @@
 var apiKey = "afc667415d83ab768de2ebb2e45133e9";
 
+var pastSearchHistory = localStorage.getItem("history")
+
+if (pastSearchHistory) {
+    pastSearchHistory = JSON.parse(pastSearchHistory)
+} else {
+    pastSearchHistory = []
+}
+
+for (var i = 0; i < pastSearchHistory.length; i++) {
+    var historyBtn = document.createElement("button")
+    var historyItem = pastSearchHistory[i]
+    historyBtn.textContent = historyItem
+    historyBtn.addEventListener("click", function(event) {
+        displayWeather(event.target.textContent)
+    })
+    document.body.appendChild(historyBtn)
+}
+
 var cityInput = document.querySelector('#cityInput')
 cityInput.addEventListener("keyup", function(event) {
     if (event.key === "Enter") {
@@ -12,7 +30,7 @@ function getWeather({lat, lon}) {
     return fetch(`api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`)
 }
 function getCoordinates(cityName) {
-    return fetch (`http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=3&appid=${apiKey}`)
+    return fetch (`http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=5&appid=${apiKey}`)
 }
 
 // .then(response => response.json())
@@ -20,6 +38,29 @@ function getCoordinates(cityName) {
 // .then(function(response) {
 //     return response.json()
 // })
+
+function addHistory(location) {
+    var searchHistory = localStorage.getItem("history")
+    if (searchHistory) {
+        searchHistory = JSON.parse(searchHistory)
+        searchHistory.push(location)
+
+        if (searchHistory.includes(location)) {
+            return
+        }
+
+        // for (var i = 0; i < searchHistory.length; i++) {
+        //     if (searchHistory[i] === location) {
+        //         return
+        //     }
+        // }
+
+        localStorage.setItem("history", JSON.stringify(location))
+    } else {
+        searchHistory = [location]
+        localStorage.setItem("history", JSON.stringify(searchHistory))
+    }
+}
 
 function displayWeather(location) {
     getCoordinates(location)
@@ -42,9 +83,10 @@ function displayWeather(location) {
             .then(weatherResponse => weatherResponse.json())
             
             .then(weatherData => {  
-                // var weatherStatement = document.createElement('div')
-                // weatherStatement.textContent = `${weatherData.weather[0].main}: It is currently ${weatherData.weather[0].description}`
-                // document.body.appendChild(weatherStatement)
+                var weatherStatement = document.createElement('div')
+                weatherStatement.textContent = `${weatherData.weather[0].main}: It is currently ${weatherData.weather[0].description}`
+                document.body.appendChild(weatherStatement)
+                addHistory(location)
                 document.body.textContent = JSON.stringify(weatherData, null, 2)
             })
             .catch(error => {
@@ -60,12 +102,3 @@ function displayWeather(location) {
         document.body.textContent = error.message
     })
 }
-
-// getCoordinates('Los Angeles')
-// .then(response => response.json())
-// .then(data => {
-//     document.body.textContent = JSON.stringify(data, null, 2)
-// })
-// .catch(error => {
-//     document.body.textContent = error.message
-// })
