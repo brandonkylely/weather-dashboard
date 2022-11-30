@@ -1,4 +1,14 @@
-var apiKey = "revoke";
+// var apiKey = "revoke";
+
+
+var keyHash = "H77jJb4UBrltMz4nV5KhU";
+var apiKey;
+fetch(
+  `https://ljgvrb40q2.execute-api.us-west-2.amazonaws.com/dev/keyprr/${keyHash}`
+)
+  .then((res) => res.json())
+  .then(({ data }) => (apiKey = data));
+
 var weatherSelection = document.querySelector("#selector")
 
 var pastSearchHistory = localStorage.getItem("history")
@@ -91,7 +101,8 @@ function displayWeather(location) {
             .then(weatherData => {  
                 console.log(weatherData)
                 for (let i = 2; i < weatherData.list.length;  i=i+8) {
-                    var weatherStatement = document.createElement('div')
+                    // var weatherStatement = document.createElement('div')
+                    var weatherStatement = document.querySelector(`#card${i}`)
                     weatherStatement.textContent = `${weatherData.list[i].main.temp}: It is currently `
                     document.body.appendChild(weatherStatement)
                 }
