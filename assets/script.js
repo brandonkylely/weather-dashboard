@@ -1,6 +1,3 @@
-// var apiKey = "revoke";
-
-
 var keyHash = "H77jJb4UBrltMz4nV5KhU";
 var apiKey;
 fetch(
@@ -19,15 +16,7 @@ if (pastSearchHistory) {
     pastSearchHistory = []
 }
 
-for (var i = 0; i < pastSearchHistory.length; i++) {
-    var historyBtn = document.createElement("button")
-    var historyItem = pastSearchHistory[i]
-    historyBtn.textContent = historyItem
-    historyBtn.addEventListener("click", function(event) {
-        displayWeather(event.target.textContent)
-    })
-    document.body.appendChild(historyBtn)
-}
+
 
 var cityInput = document.querySelector('#cityInput')
 cityInput.addEventListener("keyup", function(event) {
@@ -49,6 +38,15 @@ function getCoordinates(cityName) {
 // .then(function(response) {
 //     return response.json()
 // })
+for (var i = 0; i < pastSearchHistory.length; i++) {
+    var historyBtn = document.createElement("button")
+    var historyItem = pastSearchHistory[i]
+    historyBtn.textContent = historyItem
+    historyBtn.addEventListener("click", function(event) {
+        displayWeather(event.target.textContent)
+    })
+    document.body.appendChild(historyBtn)
+}
 
 function addHistory(location) {
     var searchHistory = localStorage.getItem("history")
@@ -92,7 +90,7 @@ function displayWeather(location) {
             // currentWeather.textContent = `${data.main.temp}`
             weatherSelection.innerHTML = `
             <h3>${data.name} ${moment(data.dt, "X").format("MM/DD/YYYY")} <img src="http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png"></h3>
-                <p>Temp:${data.main.temp} degrees F</p>
+                <p>Temp:${data.main.temp}°F</p>
                 `
 
             getWeather({lat: data.coord.lat, lon: data.coord.lon})
@@ -100,10 +98,10 @@ function displayWeather(location) {
             
             .then(weatherData => {  
                 console.log(weatherData)
-                for (let i = 2; i < weatherData.list.length;  i=i+8) {
+                for (let i = 3; i < weatherData.list.length;  i=i+8) {
                     // var weatherStatement = document.createElement('div')
                     var weatherStatement = document.querySelector(`#card${i}`)
-                    weatherStatement.textContent = `${weatherData.list[i].main.temp}: It is currently `
+                    weatherStatement.textContent = `${weatherData.list[i].main.temp}°F at 12:00pm`
                     document.body.appendChild(weatherStatement)
                 }
                 addHistory(location)
